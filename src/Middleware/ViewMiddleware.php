@@ -2,7 +2,7 @@
 
 namespace Swoft\View\Middleware;
 
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Swoft\App;
@@ -27,7 +27,7 @@ class ViewMiddleware implements MiddlewareInterface
 {
     /**
      * @param \Psr\Http\Message\ServerRequestInterface     $request
-     * @param \Interop\Http\Server\RequestHandlerInterface $handler
+     * @param \Psr\Http\Server\RequestHandlerInterface $handler
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
