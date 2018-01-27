@@ -2,6 +2,7 @@
 Swoft view Component
 
 # Install
+composer require swoft/view
 
 # Document
 
