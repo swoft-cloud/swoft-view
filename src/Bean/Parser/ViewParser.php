@@ -2,7 +2,7 @@
 
 namespace Swoft\View\Bean\Parser;
 
-use Swoft\Bean\Parser\AbstractParserInterface;
+use Swoft\Bean\Parser\AbstractParser;
 use Swoft\View\Bean\Annotation\View;
 use Swoft\View\Bean\Collector\ViewCollector;
 
@@ -13,7 +13,7 @@ use Swoft\View\Bean\Collector\ViewCollector;
  * @copyright Copyright 2010-2017 Swoft software
  * @license   PHP Version 7.x {@link http://www.php.net/license/3_0.txt}
  */
-class ViewParser extends AbstractParserInterface
+class ViewParser extends AbstractParser
 {
 
     /**

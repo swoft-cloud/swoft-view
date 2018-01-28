@@ -9,19 +9,15 @@ use Swoft\App;
 use Swoft\Bean\Annotation\Bean;
 use Swoft\Contract\Arrayable;
 use Swoft\Core\RequestContext;
+use Swoft\Http\Server\AttributeEnum;
 use Swoft\Http\Server\Middleware\AcceptMiddleware;
 use Swoft\Middleware\MiddlewareInterface;
 use Swoft\View\Bean\Collector\ViewCollector;
 
 /**
- * the middleware of view
+ * The middleware of view
  *
  * @Bean()
- * @uses      ViewMiddleware
- * @version   2018年01月15日
- * @author    stelin <phpcrazy@126.com>
- * @copyright Copyright 2010-2016 swoft software
- * @license   PHP Version 7.x {@link http://www.php.net/license/3_0.txt}
  */
 class ViewMiddleware implements MiddlewareInterface
 {
@@ -59,7 +55,7 @@ class ViewMiddleware implements MiddlewareInterface
         $currentAccept = current($accepts);
 
         /* @var \Swoft\Http\Message\Server\Response $response */
-        $responseAttribute = AcceptMiddleware::RESPONSE_ATTRIBUTE;
+        $responseAttribute = AttributeEnum::RESPONSE_ATTRIBUTE;
         $data = $response->getAttribute($responseAttribute);
 
         // the condition of view
