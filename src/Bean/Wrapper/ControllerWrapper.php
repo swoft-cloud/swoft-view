@@ -3,7 +3,7 @@
 namespace Swoft\View\Bean\Wrapper;
 
 use Swoft\View\Bean\Annotation\View;
-use Swoft\Bean\Wrapper\AbstractWrapperInterface;
+use Swoft\Bean\Wrapper\AbstractWrapper;
 
 /**
  * 路由注解封装器
@@ -14,33 +14,28 @@ use Swoft\Bean\Wrapper\AbstractWrapperInterface;
  * @copyright Copyright 2010-2016 swoft software
  * @license   PHP Version 7.x {@link http://www.php.net/license/3_0.txt}
  */
-class ControllerWrapper extends AbstractWrapperInterface
+class ControllerWrapper extends AbstractWrapper
 {
     /**
      * 类注解
      *
      * @var array
      */
-    protected $classAnnotations
-        = [
-        ];
+    protected $classAnnotations = [];
 
     /**
      * 属性注解
      *
      * @var array
      */
-    protected $propertyAnnotations
-        = [
-        ];
+    protected $propertyAnnotations = [];
 
     /**
      * 方法注解
      *
      * @var array
      */
-    protected $methodAnnotations
-        = [
+    protected $methodAnnotations = [
             View::class,
         ];
 
@@ -51,7 +46,7 @@ class ControllerWrapper extends AbstractWrapperInterface
      *
      * @return bool
      */
-    public function isParseClassAnnotations(array $annotations)
+    public function isParseClassAnnotations(array $annotations): bool
     {
         return false;
     }
@@ -63,7 +58,7 @@ class ControllerWrapper extends AbstractWrapperInterface
      *
      * @return bool
      */
-    public function isParsePropertyAnnotations(array $annotations)
+    public function isParsePropertyAnnotations(array $annotations): bool
     {
         return false;
     }
@@ -75,7 +70,7 @@ class ControllerWrapper extends AbstractWrapperInterface
      *
      * @return bool
      */
-    public function isParseMethodAnnotations(array $annotations)
+    public function isParseMethodAnnotations(array $annotations): bool
     {
         return isset($annotations[View::class]);
     }
