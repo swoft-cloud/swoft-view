@@ -3,7 +3,7 @@
 namespace Swoft\View\Bootstrap;
 
 use Swoft\Bean\Annotation\BootBean;
-use Swoft\Core\BootBeanIntereface;
+use Swoft\Core\BootBeanInterface;
 use Swoft\View\Base\View;
 
 /**
@@ -11,9 +11,13 @@ use Swoft\View\Base\View;
  *
  * @BootBean()
  */
-class CoreBean implements BootBeanIntereface
+class CoreBean implements BootBeanInterface
 {
-    public function beans()
+
+    /**
+     * @return array
+     */
+    public function beans():array
     {
         return [
             'view'         => [
