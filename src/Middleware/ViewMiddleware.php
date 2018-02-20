@@ -11,7 +11,7 @@ use Swoft\Contract\Arrayable;
 use Swoft\Core\RequestContext;
 use Swoft\Http\Server\AttributeEnum;
 use Swoft\Http\Server\Middleware\AcceptMiddleware;
-use Swoft\Middleware\MiddlewareInterface;
+use Swoft\Http\Message\Middleware\MiddlewareInterface;
 use Swoft\View\Bean\Collector\ViewCollector;
 
 /**
