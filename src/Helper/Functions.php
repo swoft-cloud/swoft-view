@@ -9,7 +9,7 @@ if (!function_exists('view')) {
      *
      * @return \Swoft\Http\Message\Server\Response
      */
-    function view(string $template, array $data, $layout = null)
+    function view(string $template, array $data = [], $layout = null)
     {
         /**
          * @var \Swoft\View\Base\View               $view
