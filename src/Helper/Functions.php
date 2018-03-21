@@ -9,7 +9,7 @@ if (!function_exists('view')) {
      *
      * @return \Swoft\Http\Message\Server\Response
      */
-    function view(string $template, array $data, $layout = null)
+    function view(string $template, array $data = [], $layout = null)
     {
         /**
          * @var \Swoft\View\Base\View               $view
@@ -18,7 +18,7 @@ if (!function_exists('view')) {
         $view     = \Swoft\App::getBean('view');
         $response = \Swoft\Core\RequestContext::getResponse();
 
-        $content  = $view->render($template, $data, $layout);
+        $content  = $view->render(\Swoft\App::getAlias($template), $data, $layout);
         $response = $response->withContent($content)->withoutHeader('Content-Type')->withAddedHeader('Content-Type', 'text/html');
 
         return $response;
