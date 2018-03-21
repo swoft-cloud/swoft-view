@@ -70,7 +70,7 @@ class ViewMiddleware implements MiddlewareInterface
 
             /* @var \Swoft\View\Base\View $view */
             $view    = App::getBean('view');
-            $content = $view->render($template, $data, $layout);
+            $content = $view->render(App::getAlias($template), $data, $layout);
             $response = $response->withContent($content)->withAttribute($responseAttribute, null);
             $response = $response->withoutHeader('Content-Type')->withAddedHeader('Content-Type', 'text/html');
         }
