@@ -3,7 +3,22 @@ Swoft view Component
 
 # Install
 
+- composer command
+
+```bash
+composer require swoft/view
+```
+
 # Document
 
+Please see [document site](https://doc.swoft.org)
+
+# unit testing
+
+```bash
+phpunit 
+```
+
 # LICENSE
-Swoft View Component is open-sourced software licensed under the [Apache license](LICENSE).
+
+The Component is open-sourced software licensed under the [Apache license](LICENSE).
