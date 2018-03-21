@@ -2,6 +2,7 @@
 
 namespace Swoft\View\Bean\Collector;
 
+use Swoft\App;
 use Swoft\Bean\CollectorInterface;
 use Swoft\View\Bean\Annotation\View;
 
@@ -27,13 +28,14 @@ class ViewCollector implements CollectorInterface
      * @param string $propertyName
      * @param string $methodName
      * @param null   $propertyValue
+     * @throws \InvalidArgumentException
      */
     public static function collect(string $className, $objectAnnotation = null, string $propertyName = "", string $methodName = "", $propertyValue = null)
     {
         if ($objectAnnotation instanceof View) {
             self::$views[$className]['view'][$methodName] = [
-                'template' => $objectAnnotation->getTemplate(),
-                'layout'   => $objectAnnotation->getLayout(),
+                'template' => App::getAlias($objectAnnotation->getTemplate()),
+                'layout'   => App::getAlias($objectAnnotation->getLayout()),
             ];
         }
     }
