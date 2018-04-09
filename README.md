@@ -1,7 +1,7 @@
 # Swoft View
 Swoft view Component
 
-# Install
+## Install
 
 - composer command
 
@@ -9,16 +9,16 @@ Swoft view Component
 composer require swoft/view
 ```
 
-# Document
+## Document
 
 Please see [document site](https://doc.swoft.org)
 
-# unit testing
+## Unit testing
 
 ```bash
 phpunit 
 ```
 
-# LICENSE
+## LICENSE
 
 The Component is open-sourced software licensed under the [Apache license](LICENSE).
