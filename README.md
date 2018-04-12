@@ -1,5 +1,5 @@
 # Swoft View
-Swoft view Component
+Swoft framework view Component 
 
 ## Install
 
