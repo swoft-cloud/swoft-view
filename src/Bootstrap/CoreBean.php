@@ -3,8 +3,9 @@
 namespace Swoft\View\Bootstrap;
 
 use Swoft\Bean\Annotation\BootBean;
+use Swoft\Blade\Bean\Annotation\Blade;
 use Swoft\Core\BootBeanInterface;
-use Swoft\View\Base\View;
+use Swoft\View\Base\BladeView;
 
 /**
  *  The core bean of view
@@ -19,9 +20,11 @@ class CoreBean implements BootBeanInterface
      */
     public function beans():array
     {
+
+
         return [
             'view'         => [
-                'class'     => View::class,
+                'class'     => BladeView::class,
             ],
         ];
     }
