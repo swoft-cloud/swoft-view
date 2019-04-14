@@ -1,20 +1,16 @@
 <?php
-namespace Swoft\View\Base;
+namespace Swoft\View;
 
 use Swoft\App;
+use Swoft\View\Contract;
 use Swoft\Helper\FileHelper;
 
 /**
- * Class ViewRenderer - Render PHP view scripts
+ * Class Renderer - PHP view scripts renderer
  *
- * @package Swoft\Web
- * @uses      View
- * @version   2017年08月14日
- * @author    inhere <in.798@qq.com>
- * @copyright Copyright 2010-2016 Swoft software
- * @license   PHP Version 7.x {@link http://www.php.net/license/3_0.txt}
+ * @since 1.0
  */
-class View extends AbstractViewInterface
+class Renderer implements ViewInterface
 {
     /** @var string 视图存放基础路径 */
     protected $viewsPath;
@@ -32,7 +28,7 @@ class View extends AbstractViewInterface
     protected $suffixes = ['php', 'tpl', 'html'];
 
     /**
-     * in layout file '...<body>{_CONTENT_}</body>...'
+     * In layout file '...<body>{_CONTENT_}</body>...'
      *
      * @var string
      */
@@ -44,7 +40,7 @@ class View extends AbstractViewInterface
      *
      * @param string $view
      * @param array $data extract data to view, cannot contain view as a key
-     * @param string|null|false $layout override default layout file
+     * @param string|null|false $layout Override default layout file
      * @return string
      * @throws \Throwable
      */
