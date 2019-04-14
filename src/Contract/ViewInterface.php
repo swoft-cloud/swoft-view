@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Swoft\View\Contract;
 
@@ -8,6 +8,8 @@ namespace Swoft\View\Contract;
  */
 interface ViewInterface
 {
+    public const DEFAULT_SUFFIXES = ['php', 'tpl', 'html'];
+
     /**
      * @param string      $view
      * @param array       $data
@@ -15,5 +17,5 @@ interface ViewInterface
      *
      * @return string
      */
-    public function render(string $view, array $data = [], $layout = null);
+    public function render(string $view, array $data = [], $layout = null): string;
 }

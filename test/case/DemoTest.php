@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 class DemoTest extends TestCase
 {
-    public function testDemo()
+    public function testDemo(): void
     {
         $this->assertTrue(true);
     }

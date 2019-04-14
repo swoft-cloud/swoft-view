@@ -1,26 +1,26 @@
-<?php
+<?php declare(strict_types=1);
 
 if (!function_exists('view')) {
-
     /**
-     * @param string      $template
-     * @param array       $data
-     * @param string|null $layout
+     * @param string            $template
+     * @param array             $data
+     * @param string|null|false $layout
      *
-     * @return \Swoft\Http\Message\Server\Response
+     * @return \Swoft\Http\Message\Response
+     * @throws Throwable
      */
     function view(string $template, array $data = [], $layout = null)
     {
         /**
-         * @var \Swoft\View\Base\View               $view
-         * @var \Swoft\Http\Message\Server\Response $response
+         * @var \Swoft\View\Renderer         $renderer
+         * @var \Swoft\Http\Message\Response $response
          */
-        $view     = \Swoft\App::getBean('view');
-        $response = \Swoft\Core\RequestContext::getResponse();
+        $renderer = \Swoft::getSingleton('view');
+        $response = \Swoft\Context\Context::mustGet()->getResponse();
+        $content  = $renderer->render(\Swoft::getAlias($template), $data, $layout);
 
-        $content  = $view->render(\Swoft\App::getAlias($template), $data, $layout);
-        $response = $response->withContent($content)->withoutHeader('Content-Type')->withAddedHeader('Content-Type', 'text/html');
-
-        return $response;
+        return $response
+            ->withContent($content)
+            ->withHeader('Content-Type', 'text/html');
     }
 }

@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace Swoft\View;
 
-use Swoft\App;
-use Swoft\View\Contract;
-use Swoft\Helper\FileHelper;
+use Swoft\Stdlib\Helper\FileHelper;
+use Swoft\View\Contract\ViewInterface;
 
 /**
  * Class Renderer - PHP view scripts renderer
@@ -12,20 +12,30 @@ use Swoft\Helper\FileHelper;
  */
 class Renderer implements ViewInterface
 {
-    /** @var string 视图存放基础路径 */
-    protected $viewsPath;
+    /**
+     * @var string Default layout file
+     */
+    protected $layout = '';
 
-    /** @var null|string 默认布局文件 */
-    protected $layout;
-
-    /** @var array Attributes for the view */
-    protected $attributes = [];
-
-    /** @var string Default view suffix. */
+    /**
+     * @var string Default view suffix.
+     */
     protected $suffix = 'php';
 
-    /** @var array Allowed suffix list. It use auto add suffix. */
-    protected $suffixes = ['php', 'tpl', 'html'];
+    /**
+     * @var array Allowed suffix list. It use auto add suffix.
+     */
+    protected $suffixes = [];
+
+    /**
+     * @var string View storage base path
+     */
+    protected $viewsPath;
+
+    /**
+     * @var array Attributes for the view
+     */
+    protected $attributes = [];
 
     /**
      * In layout file '...<body>{_CONTENT_}</body>...'
@@ -34,17 +44,22 @@ class Renderer implements ViewInterface
      */
     protected $placeholder = '{_CONTENT_}';
 
+    public function __construct()
+    {
+        $this->suffixes = self::DEFAULT_SUFFIXES;
+    }
+
     /**
      * Render a view, if layout file is setting, will use it.
      * throws RuntimeException if view file does not exist
      *
-     * @param string $view
-     * @param array $data extract data to view, cannot contain view as a key
+     * @param string            $view
+     * @param array             $data   extract data to view, cannot contain view as a key
      * @param string|null|false $layout Override default layout file
      * @return string
      * @throws \Throwable
      */
-    public function render(string $view, array $data = [], $layout = null)
+    public function render(string $view, array $data = [], $layout = null): string
     {
         $output = $this->fetch($view, $data);
 
@@ -57,59 +72,59 @@ class Renderer implements ViewInterface
     }
 
     /**
-     * @param $view
-     * @param array $data
+     * @param string $view
+     * @param array  $data
      * @return string
      * @throws \Throwable
      */
-    public function renderPartial($view, array $data = [])
+    public function renderPartial(string $view, array $data = []): string
     {
         return $this->fetch($view, $data);
     }
 
     /**
-     * @param string $content
-     * @param array $data
+     * @param string      $content
+     * @param array       $data
      * @param string|null $layout override default layout file
      * @return string
      * @throws \Throwable
      */
-    public function renderBody($content, array $data = [], $layout = null)
+    public function renderBody(string $content, array $data = [], $layout = null): string
     {
         return $this->renderContent($content, $data, $layout);
     }
 
     /**
-     * @param string $content
-     * @param array $data
+     * @param string      $content
+     * @param array       $data
      * @param string|null $layout override default layout file
      * @return string
      * @throws \Throwable
      */
-    public function renderContent($content, array $data = [], $layout = null)
+    public function renderContent(string $content, array $data = [], $layout = null): string
     {
-        // render layout
-        if ($layout = $layout ? : $this->layout) {
-            $mark = $this->placeholder;
-            $main = $this->fetch($layout, $data);
-            $content = preg_replace("/$mark/", $content, $main, 1);
+        // Render layout
+        if ($layout = $layout ?: $this->layout) {
+            $mark    = $this->placeholder;
+            $main    = $this->fetch($layout, $data);
+            $content = \preg_replace("/$mark/", $content, $main, 1);
         }
 
         return $content;
     }
 
     /**
-     * @param $view
-     * @param array $data
-     * @param bool $outputIt
-     * @return string|null
+     * @param string $view
+     * @param array  $data
+     * @param bool   $outputIt
+     * @return string
      * @throws \Throwable
      */
-    public function include($view, array $data = [], $outputIt = true)
+    public function include(string $view, array $data = [], $outputIt = true): string
     {
         if ($outputIt) {
             echo $this->fetch($view, $data);
-            return null;
+            return '';
         }
 
         return $this->fetch($view, $data);
@@ -120,15 +135,15 @@ class Renderer implements ViewInterface
      * throws RuntimeException if $viewsPath . $view does not exist
      *
      * @param string $view
-     * @param array $data
+     * @param array  $data
      * @return mixed
      * @throws \Throwable
      */
-    public function fetch($view, array $data = [])
+    public function fetch(string $view, array $data = [])
     {
         $file = $this->getViewFile($view);
 
-        if (! is_file($file)) {
+        if (!is_file($file)) {
             throw new \RuntimeException("cannot render '$view' because the view file does not exist. File: $file");
         }
 
@@ -157,7 +172,7 @@ class Renderer implements ViewInterface
      * @param $view
      * @return string
      */
-    public function getViewFile($view)
+    public function getViewFile(string $view): string
     {
         $view = $this->getRealView($view);
 
@@ -166,11 +181,11 @@ class Renderer implements ViewInterface
 
     /**
      * @param string $file
-     * @param array $data
+     * @param array  $data
      */
-    protected function protectedIncludeScope($file, array $data)
+    protected function protectedIncludeScope($file, array $data): void
     {
-        extract($data, EXTR_OVERWRITE);
+        \extract($data, EXTR_OVERWRITE);
         include $file;
     }
 
@@ -179,7 +194,7 @@ class Renderer implements ViewInterface
      *
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -189,7 +204,7 @@ class Renderer implements ViewInterface
      *
      * @param array $attributes
      */
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): void
     {
         $this->attributes = $attributes;
     }
@@ -200,7 +215,7 @@ class Renderer implements ViewInterface
      * @param $key
      * @param $value
      */
-    public function addAttribute($key, $value)
+    public function addAttribute($key, $value): void
     {
         $this->attributes[$key] = $value;
     }
@@ -213,7 +228,7 @@ class Renderer implements ViewInterface
      */
     public function getAttribute($key)
     {
-        if (! isset($this->attributes[$key])) {
+        if (!isset($this->attributes[$key])) {
             return null;
         }
 
@@ -225,9 +240,9 @@ class Renderer implements ViewInterface
      *
      * @return string
      */
-    public function getViewsPath()
+    public function getViewsPath(): string
     {
-        return App::getAlias($this->viewsPath);
+        return \Swoft::getAlias($this->viewsPath);
     }
 
     /**
@@ -235,10 +250,10 @@ class Renderer implements ViewInterface
      *
      * @param string $viewsPath
      */
-    public function setViewsPath($viewsPath)
+    public function setViewsPath(string $viewsPath): void
     {
         if ($viewsPath) {
-            $this->viewsPath = rtrim($viewsPath, '/\\') . '/';
+            $this->viewsPath = \rtrim($viewsPath, '/\\') . '/';
         }
     }
 
@@ -247,7 +262,7 @@ class Renderer implements ViewInterface
      *
      * @return string
      */
-    public function getLayout()
+    public function getLayout(): string
     {
         return $this->layout;
     }
@@ -257,9 +272,9 @@ class Renderer implements ViewInterface
      *
      * @param string $layout
      */
-    public function setLayout($layout)
+    public function setLayout(string $layout): void
     {
-        $this->layout = rtrim($layout, '/\\');
+        $this->layout = \rtrim($layout, '/\\');
     }
 
     /**
@@ -273,7 +288,7 @@ class Renderer implements ViewInterface
     /**
      * @param string $placeholder
      */
-    public function setPlaceholder(string $placeholder)
+    public function setPlaceholder(string $placeholder): void
     {
         $this->placeholder = $placeholder;
     }
@@ -282,12 +297,12 @@ class Renderer implements ViewInterface
      * @param string $view
      * @return string
      */
-    protected function getRealView($view)
+    protected function getRealView(string $view): string
     {
         $sfx = FileHelper::getSuffix($view, true);
         $ext = $this->suffix;
 
-        if ($sfx === $ext || in_array($sfx, $this->suffixes, true)) {
+        if ($sfx === $ext || \in_array($sfx, $this->suffixes, true)) {
             return $view;
         }
 
@@ -305,7 +320,7 @@ class Renderer implements ViewInterface
     /**
      * @param string $suffix
      */
-    public function setSuffix(string $suffix)
+    public function setSuffix(string $suffix): void
     {
         $this->suffix = $suffix;
     }

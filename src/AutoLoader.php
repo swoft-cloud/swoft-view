@@ -53,8 +53,6 @@ class AutoLoader extends SwoftComponent
 
     /**
      * @return array
-     * @throws \ReflectionException
-     * @throws \Swoft\Bean\Exception\ContainerException
      */
     public function coreBean(): array
     {

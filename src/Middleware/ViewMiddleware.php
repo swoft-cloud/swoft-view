@@ -1,17 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Swoft\View\Middleware;
 
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Swoft\App;
-use Swoft\Bean\Annotation\Bean;
-use Swoft\Contract\Arrayable;
-use Swoft\Core\RequestContext;
-use Swoft\Http\Server\AttributeEnum;
+use Swoft\Bean\Annotation\Mapping\Bean;
+use Swoft\Stdlib\Arrayable;
+use Swoft\Http\Server\Contract\MiddlewareInterface;
 use Swoft\Http\Server\Middleware\AcceptMiddleware;
-use Swoft\Http\Message\Middleware\MiddlewareInterface;
 use Swoft\View\Bean\Collector\ViewCollector;
 
 /**
@@ -37,9 +34,10 @@ class ViewMiddleware implements MiddlewareInterface
 
     /**
      * @param \Psr\Http\Message\ServerRequestInterface $request
-     * @param \Psr\Http\Message\ResponseInterface      $response
+     * @param \Psr\Http\Message\ResponseInterface|\Swoft\Http\Message\Response      $response
      *
-     * @return \Psr\Http\Message\ResponseInterface|\Swoft\Http\Message\Server\Response
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Throwable
      */
     private function responseView(ServerRequestInterface $request, ResponseInterface $response)
     {
@@ -54,7 +52,7 @@ class ViewMiddleware implements MiddlewareInterface
         $accepts       = $request->getHeader('accept');
         $currentAccept = current($accepts);
 
-        /* @var \Swoft\Http\Message\Server\Response $response */
+        /* @var \Swoft\Http\Message\Response $response */
         $responseAttribute = AttributeEnum::RESPONSE_ATTRIBUTE;
         $data = $response->getAttribute($responseAttribute);
 
@@ -68,11 +66,13 @@ class ViewMiddleware implements MiddlewareInterface
                 $data = $data->toArray();
             }
 
-            /* @var \Swoft\View\Base\View $view */
-            $view    = App::getBean('view');
+            /* @var \Swoft\View\Renderer $view */
+            $view    = \Swoft::getBean('view');
             $content = $view->render($template, $data, $layout);
-            $response = $response->withContent($content)->withAttribute($responseAttribute, null);
-            $response = $response->withoutHeader('Content-Type')->withAddedHeader('Content-Type', 'text/html');
+            $response = $response
+                ->withContent($content)
+                ->withAttribute($responseAttribute, null)
+                ->withoutHeader('Content-Type')->withAddedHeader('Content-Type', 'text/html');
         }
 
         return $response;

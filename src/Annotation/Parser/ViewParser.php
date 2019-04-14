@@ -1,38 +1,46 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace Swoft\View\Bean\Parser;
+namespace Swoft\View\Annotation\Parser;
 
-use Swoft\Bean\Parser\AbstractParser;
-use Swoft\View\Bean\Annotation\View;
-use Swoft\View\Bean\Collector\ViewCollector;
+use Swoft\Annotation\Annotation\Mapping\AnnotationParser;
+use Swoft\Annotation\Annotation\Parser\Parser;
+use Swoft\Annotation\AnnotationException;
+use Swoft\View\Annotation\Mapping\View;
+use Swoft\View\ViewRegister;
 
 /**
- * @uses      ViewParser
- * @version   2017-11-08
- * @author    huangzhhui <huangzhwork@gmail.com>
- * @copyright Copyright 2010-2017 Swoft software
- * @license   PHP Version 7.x {@link http://www.php.net/license/3_0.txt}
+ * Class ViewParser
+ *
+ * @since 2.0
+ * @AnnotationParser(View::class)
  */
-class ViewParser extends AbstractParser
+class ViewParser extends Parser
 {
-
     /**
-     * 解析注解
+     * Parse object
      *
-     * @param string      $className
-     * @param View        $objectAnnotation
-     * @param string      $propertyName
-     * @param string      $methodName
-     * @param string|null $propertyValue
-     * @return void
+     * @param int  $type       Class or Method or Property
+     * @param View $annotation Annotation object
+     *
+     * @return array
+     * Return empty array is nothing to do!
+     * When class type return [$beanName, $className, $scope, $alias, $size] is to inject bean
+     * When property type return [$propertyValue, $isRef] is to reference value
      */
-    public function parser(
-        string $className,
-        $objectAnnotation = null,
-        string $propertyName = "",
-        string $methodName = "",
-        $propertyValue = null
-    ) {
-        ViewCollector::collect($className, $objectAnnotation, $propertyName, $methodName, $propertyValue);
+    public function parse(int $type, $annotation): array
+    {
+        if ($type !== self::TYPE_METHOD) {
+            throw new AnnotationException('`@View` must be defined on class method!');
+        }
+
+        ViewRegister::bindView(
+            $this->className,
+            $this->methodName,
+            $annotation->getTemplate(),
+            $annotation->getLayout()
+        );
+
+        return [];
     }
 }
+
