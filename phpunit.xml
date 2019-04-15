@@ -9,13 +9,13 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="Tests">
-            <directory suffix="Test.php">./test/Cases</directory>
+        <testsuite name="pkgTest">
+            <directory suffix="Test.php">test/case</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./app</directory>
+            <directory suffix=".php">.src</directory>
         </whitelist>
     </filter>
 </phpunit>

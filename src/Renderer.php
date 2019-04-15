@@ -3,6 +3,7 @@
 namespace Swoft\View;
 
 use Swoft\Stdlib\Helper\FileHelper;
+use Swoft\Stdlib\Helper\ObjectHelper;
 use Swoft\View\Contract\ViewInterface;
 
 /**
@@ -44,9 +45,15 @@ class Renderer implements ViewInterface
      */
     protected $placeholder = '{_CONTENT_}';
 
-    public function __construct()
+    /**
+     * Class constructor.
+     * @param array $config
+     */
+    public function __construct(array $config)
     {
         $this->suffixes = self::DEFAULT_SUFFIXES;
+
+        ObjectHelper::init($this, $config);
     }
 
     /**
@@ -150,18 +157,20 @@ class Renderer implements ViewInterface
         /*
         foreach ($data as $k=>$val) {
             if (in_array($k, array_keys($this->attributes))) {
-                throw new \InvalidArgumentException("Duplicate key found in data and renderer attributes. " . $k);
+                throw new \InvalidArgumentException(
+                    "Duplicate key found in data and renderer attributes. " . $k
+                );
             }
         }
         */
-        $data = array_merge($this->attributes, $data);
+        $data = \array_merge($this->attributes, $data);
 
         try {
-            ob_start();
+            \ob_start();
             $this->protectedIncludeScope($file, $data);
-            $output = ob_get_clean();
+            $output = \ob_get_clean();
         } catch (\Throwable $e) { // PHP 7+
-            ob_end_clean();
+            \ob_end_clean();
             throw $e;
         }
 
