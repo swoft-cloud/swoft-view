@@ -30,7 +30,7 @@ class Renderer implements ViewInterface
     /**
      * @var string View storage base path
      */
-    protected $viewsPath;
+    protected $viewsPath = '';
 
     /**
      * @var array Attributes for the view
@@ -301,6 +301,11 @@ class Renderer implements ViewInterface
     {
         $sfx = FileHelper::getSuffix($view, true);
         $ext = $this->suffix;
+
+        // No ext. eg: 'home/index'
+        if ($sfx === '') {
+            return $view . '.' . $ext;
+        }
 
         if ($sfx === $ext || \in_array($sfx, $this->suffixes, true)) {
             return $view;

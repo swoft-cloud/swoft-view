@@ -3,12 +3,7 @@
 namespace Swoft\View;
 
 use Swoft\Helper\ComposerJSON;
-use Swoft\Server\Swoole\SwooleEvent;
 use Swoft\SwoftComponent;
-use Swoft\WebSocket\Server\Router\Router;
-use Swoft\WebSocket\Server\Swoole\CloseListener;
-use Swoft\WebSocket\Server\Swoole\HandshakeListener;
-use Swoft\WebSocket\Server\Swoole\MessageListener;
 
 /**
  * Class AutoLoader
@@ -57,8 +52,9 @@ class AutoLoader extends SwoftComponent
     public function coreBean(): array
     {
         return [
-            'view'     => [
+            'view' => [
                 'class'     => Renderer::class,
+                'viewsPath' => '@base/resource/views'
             ],
         ];
     }

@@ -26,4 +26,12 @@ class ViewRegister
         // Storage
         self::$views[$actionId] = [$template, $layout];
     }
+
+    /**
+     * @return array
+     */
+    public static function getViews(): array
+    {
+        return self::$views;
+    }
 }

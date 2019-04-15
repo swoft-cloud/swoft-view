@@ -2,14 +2,15 @@
 
 namespace Swoft\View\Middleware;
 
-use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Swoft\Bean\Annotation\Mapping\Bean;
-use Swoft\Stdlib\Arrayable;
+use Swoft\Context\Context;
 use Swoft\Http\Server\Contract\MiddlewareInterface;
 use Swoft\Http\Server\Middleware\AcceptMiddleware;
-use Swoft\View\Bean\Collector\ViewCollector;
+use Swoft\Stdlib\Arrayable;
+use Swoft\View\ViewRegister;
 
 /**
  * The middleware of view
@@ -19,10 +20,11 @@ use Swoft\View\Bean\Collector\ViewCollector;
 class ViewMiddleware implements MiddlewareInterface
 {
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface     $request
+     * @param \Psr\Http\Message\ServerRequestInterface $request
      * @param \Psr\Http\Server\RequestHandlerInterface $handler
      *
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Throwable
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -33,42 +35,51 @@ class ViewMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface $request
-     * @param \Psr\Http\Message\ResponseInterface|\Swoft\Http\Message\Response      $response
+     * @param \Psr\Http\Message\ServerRequestInterface                         $request
+     * @param \Psr\Http\Message\ResponseInterface|\Swoft\Http\Message\Response $response
      *
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \Throwable
      */
     private function responseView(ServerRequestInterface $request, ResponseInterface $response)
     {
+        $ctx   = Context::mustGet();
+        $views = ViewRegister::getViews();
+
         // the info of view model
-        $collector        = ViewCollector::getCollector();
-        $controllerClass  = RequestContext::getContextDataByKey('controllerClass');
-        $controllerAction = RequestContext::getContextDataByKey('controllerAction');
-        $template         = $collector[$controllerClass]['view'][$controllerAction]['template'] ?? "";
-        $layout           = $collector[$controllerClass]['view'][$controllerAction]['layout'] ?? "";
+        $controllerClass  = $ctx->get('controllerClass');
+        $controllerAction = $ctx->get('controllerAction');
+
+        $actionId = $controllerClass . '@' . $controllerAction;
+        if (!isset($views[$actionId])) {
+            return $response;
+        }
+
+        // Get layout and template
+        [$layout, $template] = $views[$actionId];
 
         // accept and the of response
         $accepts       = $request->getHeader('accept');
-        $currentAccept = current($accepts);
+        $currentAccept = \current($accepts);
 
         /* @var \Swoft\Http\Message\Response $response */
         $responseAttribute = AttributeEnum::RESPONSE_ATTRIBUTE;
+
         $data = $response->getAttribute($responseAttribute);
 
         // the condition of view
         $isTextHtml = !empty($currentAccept) && $response->isMatchAccept($currentAccept, 'text/html');
-        $isTempalte = $controllerClass && $response->isArrayable($data) && $template;
+        $isTemplate = $controllerClass && $response->isArrayable($data) && $template;
 
         // show view
-        if ($isTextHtml && $isTempalte) {
+        if ($isTextHtml && $isTemplate) {
             if ($data instanceof Arrayable) {
                 $data = $data->toArray();
             }
 
             /* @var \Swoft\View\Renderer $view */
-            $view    = \Swoft::getBean('view');
-            $content = $view->render($template, $data, $layout);
+            $view     = \Swoft::getBean('view');
+            $content  = $view->render($template, $data, $layout);
             $response = $response
                 ->withContent($content)
                 ->withAttribute($responseAttribute, null)
