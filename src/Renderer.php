@@ -49,7 +49,7 @@ class Renderer implements ViewInterface
      * Class constructor.
      * @param array $config
      */
-    public function __construct(array $config)
+    public function __construct(array $config = [])
     {
         $this->suffixes = self::DEFAULT_SUFFIXES;
 
