@@ -2,6 +2,7 @@
 
 namespace Swoft\View;
 
+use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Stdlib\Helper\FileHelper;
 use Swoft\Stdlib\Helper\ObjectHelper;
 use Swoft\View\Contract\ViewInterface;
@@ -10,6 +11,7 @@ use Swoft\View\Contract\ViewInterface;
  * Class Renderer - PHP view scripts renderer
  *
  * @since 1.0
+ * @Bean("view")
  */
 class Renderer implements ViewInterface
 {
@@ -251,7 +253,7 @@ class Renderer implements ViewInterface
      */
     public function getViewsPath(): string
     {
-        return \Swoft::getAlias($this->viewsPath);
+        return $this->viewsPath ? \Swoft::getAlias($this->viewsPath) : '';
     }
 
     /**

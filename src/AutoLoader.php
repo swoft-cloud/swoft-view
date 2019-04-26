@@ -13,14 +13,6 @@ use Swoft\SwoftComponent;
 class AutoLoader extends SwoftComponent
 {
     /**
-     * @return bool
-     */
-    public function enable(): bool
-    {
-        return (bool)\env('ENABLE_WS_SERVER', true);
-    }
-
-    /**
      * Get namespace and dir
      *
      * @return array
@@ -49,11 +41,11 @@ class AutoLoader extends SwoftComponent
     /**
      * @return array
      */
-    public function coreBean(): array
+    public function beans(): array
     {
         return [
             'view' => [
-                'class'     => Renderer::class,
+                // 'class'     => Renderer::class,
                 'viewsPath' => '@base/resource/views'
             ],
         ];
