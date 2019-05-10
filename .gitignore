@@ -5,6 +5,7 @@
 .idea/
 .git/
 vendor/
+*.cache
 *.lock
 .phpintel/
 .DS_Store
