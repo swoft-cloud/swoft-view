@@ -2,6 +2,8 @@
 
 namespace Swoft\View;
 
+use function in_array;
+use function rtrim;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Stdlib\Helper\FileHelper;
 use Swoft\Stdlib\Helper\ObjectHelper;
@@ -264,7 +266,7 @@ class Renderer implements ViewInterface
     public function setViewsPath(string $viewsPath): void
     {
         if ($viewsPath) {
-            $this->viewsPath = \rtrim($viewsPath, '/\\') . '/';
+            $this->viewsPath = rtrim($viewsPath, '/\\') . '/';
         }
     }
 
@@ -285,7 +287,7 @@ class Renderer implements ViewInterface
      */
     public function setLayout(string $layout): void
     {
-        $this->layout = \rtrim($layout, '/\\');
+        $this->layout = rtrim($layout, '/\\');
     }
 
     /**
@@ -318,7 +320,7 @@ class Renderer implements ViewInterface
             return $view . '.' . $ext;
         }
 
-        if ($sfx === $ext || \in_array($sfx, $this->suffixes, true)) {
+        if ($sfx === $ext || in_array($sfx, $this->suffixes, true)) {
             return $view;
         }
 
