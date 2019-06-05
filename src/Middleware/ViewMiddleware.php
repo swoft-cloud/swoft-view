@@ -7,10 +7,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Context\Context;
+use Swoft\Http\Message\Response;
 use Swoft\Http\Server\Contract\MiddlewareInterface;
 use Swoft\Http\Server\Middleware\AcceptMiddleware;
-use Swoft\Stdlib\Arrayable;
+use Swoft\Stdlib\Helper\Arrayable;
 use Swoft\View\ViewRegister;
+use Throwable;
 
 /**
  * The middleware of view
@@ -20,11 +22,11 @@ use Swoft\View\ViewRegister;
 class ViewMiddleware implements MiddlewareInterface
 {
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface $request
-     * @param \Psr\Http\Server\RequestHandlerInterface $handler
+     * @param ServerRequestInterface  $request
+     * @param RequestHandlerInterface $handler
      *
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \Throwable
+     * @return ResponseInterface
+     * @throws Throwable
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -35,11 +37,11 @@ class ViewMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param \Psr\Http\Message\ServerRequestInterface                         $request
-     * @param \Psr\Http\Message\ResponseInterface|\Swoft\Http\Message\Response $response
+     * @param ServerRequestInterface     $request
+     * @param ResponseInterface|Response $response
      *
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \Throwable
+     * @return ResponseInterface
+     * @throws Throwable
      */
     private function responseView(ServerRequestInterface $request, ResponseInterface $response)
     {
@@ -62,7 +64,7 @@ class ViewMiddleware implements MiddlewareInterface
         $accepts       = $request->getHeader('accept');
         $currentAccept = \current($accepts);
 
-        /* @var \Swoft\Http\Message\Response $response */
+        /* @var Response $response */
         $responseAttribute = AttributeEnum::RESPONSE_ATTRIBUTE;
 
         $data = $response->getAttribute($responseAttribute);

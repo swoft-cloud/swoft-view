@@ -4,7 +4,7 @@ namespace Swoft\View\Annotation\Parser;
 
 use Swoft\Annotation\Annotation\Mapping\AnnotationParser;
 use Swoft\Annotation\Annotation\Parser\Parser;
-use Swoft\Annotation\AnnotationException;
+use Swoft\Annotation\Exception\AnnotationException;
 use Swoft\View\Annotation\Mapping\View;
 use Swoft\View\ViewRegister;
 
@@ -26,6 +26,7 @@ class ViewParser extends Parser
      * Return empty array is nothing to do!
      * When class type return [$beanName, $className, $scope, $alias, $size] is to inject bean
      * When property type return [$propertyValue, $isRef] is to reference value
+     * @throws AnnotationException
      */
     public function parse(int $type, $annotation): array
     {
