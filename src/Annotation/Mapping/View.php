@@ -17,7 +17,7 @@ use Doctrine\Common\Annotations\Annotation\Target;
  *     @Attribute("template", type="string")
  * )
  */
-class View
+final class View
 {
     /**
      * @var string

@@ -6,16 +6,23 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Swoft\Bean\Annotation\Mapping\Bean;
-use Swoft\Context\Context;
+use Swoft\Http\Message\ContentType;
+use Swoft\Http\Message\Request;
 use Swoft\Http\Message\Response;
 use Swoft\Http\Server\Contract\MiddlewareInterface;
-use Swoft\Http\Server\Middleware\AcceptMiddleware;
-use Swoft\Stdlib\Helper\Arrayable;
+use Swoft\Http\Server\Router\Route;
+use Swoft\Http\Server\Router\Router;
+use Swoft\Stdlib\Contract\Arrayable;
+use Swoft\View\Renderer;
 use Swoft\View\ViewRegister;
 use Throwable;
+use function context;
+use function current;
+use function is_object;
+use function strpos;
 
 /**
- * The middleware of view
+ * Class ViewMiddleware - The middleware of view render
  *
  * @Bean()
  */
@@ -30,62 +37,40 @@ class ViewMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        /** @var Response $response */
         $response = $handler->handle($request);
-        $response = $this->responseView($request, $response);
 
-        return $response;
-    }
+        /* @var Route $route */
+        [$status, , $route] = context()->get(Request::ROUTER_ATTRIBUTE);
+        if ($status !== Router::FOUND) {
+            return $response;
+        }
 
-    /**
-     * @param ServerRequestInterface     $request
-     * @param ResponseInterface|Response $response
-     *
-     * @return ResponseInterface
-     * @throws Throwable
-     */
-    private function responseView(ServerRequestInterface $request, ResponseInterface $response)
-    {
-        $ctx   = Context::mustGet();
-        $views = ViewRegister::getViews();
-
-        // the info of view model
-        $controllerClass  = $ctx->get('controllerClass');
-        $controllerAction = $ctx->get('controllerAction');
-
-        $actionId = $controllerClass . '@' . $controllerAction;
-        if (!isset($views[$actionId])) {
+        $actionId = $route->getHandler();
+        if (!$info = ViewRegister::findBindView($actionId)) {
             return $response;
         }
 
         // Get layout and template
-        [$layout, $template] = $views[$actionId];
+        [$template, $layout] = $info;
 
-        // accept and the of response
-        $accepts       = $request->getHeader('accept');
-        $currentAccept = \current($accepts);
+        // Accept list
+        $allowedAccepts = $request->getHeader('accept');
+        $currentAccept  = current($allowedAccepts);
+        $contentType    = ContentType::HTML;
 
-        /* @var Response $response */
-        $responseAttribute = AttributeEnum::RESPONSE_ATTRIBUTE;
+        if ($template && false !== strpos($currentAccept, $contentType)) {
+            $data = $response->getData();
 
-        $data = $response->getAttribute($responseAttribute);
-
-        // the condition of view
-        $isTextHtml = !empty($currentAccept) && $response->isMatchAccept($currentAccept, 'text/html');
-        $isTemplate = $controllerClass && $response->isArrayable($data) && $template;
-
-        // show view
-        if ($isTextHtml && $isTemplate) {
-            if ($data instanceof Arrayable) {
+            if (is_object($data) && $data instanceof Arrayable) {
                 $data = $data->toArray();
             }
 
-            /* @var \Swoft\View\Renderer $view */
-            $view     = \Swoft::getBean('view');
-            $content  = $view->render($template, $data, $layout);
-            $response = $response
-                ->withContent($content)
-                ->withAttribute($responseAttribute, null)
-                ->withoutHeader('Content-Type')->withAddedHeader('Content-Type', 'text/html');
+            /* @var Renderer $view */
+            $renderer = \bean('view');
+            $content  = $renderer->render($template, $data, $layout);
+
+            return $response->withContent($content)->withContentType(ContentType::KEY, $contentType);
         }
 
         return $response;

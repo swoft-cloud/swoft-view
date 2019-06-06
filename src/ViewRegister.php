@@ -4,6 +4,7 @@ namespace Swoft\View;
 
 /**
  * Class ViewRegister
+ *
  * @since 2.0
  */
 class ViewRegister
@@ -23,7 +24,7 @@ class ViewRegister
     {
         $actionId = $class . '@' . $method;
 
-        // Storage
+        // Storage template info
         self::$views[$actionId] = [$template, $layout];
     }
 
@@ -33,5 +34,15 @@ class ViewRegister
     public static function getViews(): array
     {
         return self::$views;
+    }
+
+    /**
+     * @param string $actionId
+     *
+     * @return array
+     */
+    public static function findBindView(string $actionId): array
+    {
+        return self::$views[$actionId] ?? [];
     }
 }
