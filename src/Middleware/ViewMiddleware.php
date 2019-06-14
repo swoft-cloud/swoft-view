@@ -41,7 +41,7 @@ class ViewMiddleware implements MiddlewareInterface
         $response = $handler->handle($request);
 
         /* @var Route $route */
-        [$status, , $route] = context()->get(Request::ROUTER_ATTRIBUTE);
+        [$status, , $route] = context()->getRequest()->getAttribute(Request::ROUTER_ATTRIBUTE);
         if ($status !== Router::FOUND) {
             return $response;
         }
